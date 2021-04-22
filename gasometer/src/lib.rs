@@ -80,7 +80,8 @@ impl<'config> Gasometer<'config> {
 	/// Remaining gas.
 	pub fn gas(&self) -> u64 {
 		match self.inner.as_ref() {
-			Ok(inner) => self.gas_limit - inner.used_gas - inner.memory_gas,
+			//Ok(inner) => self.gas_limit - inner.used_gas - inner.memory_gas,
+			Ok(inner) => self.gas_limit - inner.used_gas,
 			Err(_) => 0,
 		}
 	}
@@ -89,7 +90,8 @@ impl<'config> Gasometer<'config> {
 	/// Total used gas.
 	pub fn total_used_gas(&self) -> u64 {
 		match self.inner.as_ref() {
-			Ok(inner) => inner.used_gas + inner.memory_gas,
+			//Ok(inner) => inner.used_gas + inner.memory_gas,
+			Ok(inner) => inner.used_gas,
 			Err(_) => self.gas_limit,
 		}
 	}
@@ -161,7 +163,8 @@ impl<'config> Gasometer<'config> {
 		let gas_refund = self.inner_mut()?.gas_refund(cost);
 		let used_gas = self.inner_mut()?.used_gas;
 
-		let all_gas_cost = memory_gas + used_gas + gas_cost;
+        //let all_gas_cost = memory_gas + used_gas + gas_cost;
+		let all_gas_cost = used_gas + gas_cost;
 		if self.gas_limit < all_gas_cost {
 			self.inner = Err(ExitError::OutOfGas);
 			return Err(ExitError::OutOfGas)
